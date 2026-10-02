@@ -1,0 +1,5 @@
+# dsh-web-search-ddg 的插件补丁层：把自己 insert 进配置树。
+# profile 的 package.json 通过 dsh.profile.bundles 引用本包并加载这份 patch。
+- insert:
+    - id: web-search-ddg
+      name: dsh-web-search-ddg

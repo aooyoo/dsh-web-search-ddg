@@ -28,19 +28,23 @@ In your DSH profile directory (e.g. `~/.dsh/profiles/web`), install the package 
 pnpm add dsh-web-search-ddg
 ```
 
-Then edit the profile's `cordis.patch.yml` to mount it and make it the default search provider. Note that a patch row **replaces the target row's whole config** (no deep merge), so the `web` row must restate every key — the shipped row owns only `searchProvider`:
+Declare it as a profile bundle so DSH loads it as a first-class layer (visible in the plugin manager, clean removal):
+
+```json
+// profile package.json → dsh.profile.bundles
+"bundles": [..., "dsh-web-search-ddg"]
+```
+
+Then select the provider in the profile's `cordis.patch.yml`:
 
 ```yaml
 # Select this provider for the model-facing web_search tool.
 - id: web
   config:
     searchProvider: ddg-browser
-
-# Mount the plugin (registers provider id `ddg-browser`).
-- insert:
-    - id: web-search-ddg
-      name: dsh-web-search-ddg
 ```
+
+> Note: a patch row **replaces the target row's whole config** (no deep merge), so the `web` row must restate every key — the shipped row owns only `searchProvider`. The `insert` of `web-search-ddg` itself comes from the package's `dsh.bundle` patch and needs no manual row.
 
 The shipped `web-search-deepseek` row stays untouched: its provider remains registered and available, so switching back is one line (`searchProvider: deepseek-official`). DSH's selection is a single explicit id, **not** a priority chain — there is no silent fallback by design.
 

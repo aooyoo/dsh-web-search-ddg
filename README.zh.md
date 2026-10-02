@@ -28,19 +28,23 @@ DSH 自带的搜索路由（`deepseek-official`）把每次 `web_search` 执行�
 pnpm add dsh-web-search-ddg
 ```
 
-然后编辑 profile 的 `cordis.patch.yml`，挂载插件并将其设为默认搜索提供方。注意 patch 行会**整体替换目标行的 config**（无深度合并），因此 `web` 行必须重述其拥有的全部键——自带行只拥有 `searchProvider`：
+然后在 profile 的 `package.json` 中把它声明为 profile bundle，让 DSH 以一等层加载（插件管理器可见、可干净卸载）：
+
+```json
+// profile package.json → dsh.profile.bundles
+"bundles": [..., "dsh-web-search-ddg"]
+```
+
+接着在 profile 的 `cordis.patch.yml` 中选择提供方：
 
 ```yaml
 # 为面向模型的 web_search 工具选择本提供方。
 - id: web
   config:
     searchProvider: ddg-browser
-
-# 挂载插件（注册提供方 id `ddg-browser`）。
-- insert:
-    - id: web-search-ddg
-      name: dsh-web-search-ddg
 ```
+
+> 注意：patch 行会**整体替换目标行的 config**（无深度合并），因此 `web` 行必须重述其拥有的全部键——自带行只拥有 `searchProvider`。`web-search-ddg` 自身的 `insert` 来自包的 `dsh.bundle` 补丁层，无需手写。
 
 自带的 `web-search-deepseek` 行保持不动：其提供方仍注册且可用，切回只需一行（`searchProvider: deepseek-official`）。DSH 的选择是单一显式 ID，**不是**优先级链——设计上就没有静默回退。
 
