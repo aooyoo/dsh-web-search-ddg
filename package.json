@@ -1,6 +1,6 @@
 {
   "name": "dsh-web-search-ddg",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Zero-token web search for the DeepSeek Harness (DSH) web capability seam (ctx.web) — Bing fetch engine with local headless-browser DuckDuckGo fallback, no API key, no auxiliary model request",
   "type": "module",
   "main": "index.js",
